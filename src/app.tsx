@@ -5,6 +5,7 @@ import isolate from '@cycle/isolate'
 
 // import BMI from './component/BMI'
 
+import Slider from './component/LabelledSlider'
 export function App(sources : Sources) : Sinks {
 
   // const props$ = sources.props
@@ -30,8 +31,8 @@ export function App(sources : Sources) : Sinks {
   // const WeightLabelledSlider = isolate(LabelledSlider)
   // const HeightLabelledSlider = isolate(LabelledSlider)
 
-  const { DOM: weightVDom$, value: weightValue$ } = LabelledSliderFactory(weightSources)
-  const { DOM: heightVDom$, value: heightValue$ } = LabelledSliderFactory(heightSources)
+  const { DOM: weightVDom$, value: weightValue$ } = Slider(weightSources)
+  const { DOM: heightVDom$, value: heightValue$ } = Slider(heightSources)
 
   const vdom$ = most.combine((height, heightVDom, weight, weightVDom) => {
     return <div>
@@ -50,42 +51,4 @@ export function App(sources : Sources) : Sinks {
   return {
     DOM: vdom$
   }
-}
-
-function LabelledSliderFactory(sources: Sources) {
-  return isolate(LabelledSlider)(sources)
-}
-function LabelledSlider (sources : Sources) {
-
-  const domSource = sources.DOM
-  const props$ = sources.props
-
-  const newValue$ = domSource
-    .select('.slider')
-    .events('input')
-    .map(ev => ev.target.value)
-  
-  const state$ = props$
-  .map(props => newValue$
-    .map(val => ({
-      ...props,
-      value: val
-    }))
-    .startWith(props)
-  ).join()
-
-  const vdom$ = state$
-    .map(state => 
-      <div className='labeled-slider'>
-        <span className='label'>{state.label} {state.value} {state.unit}</span>
-        <input className='slider' type='range' min={state.min} max={state.max} value={state.value}/>
-      </div>
-    )
-
-  const sinks = {
-    DOM: vdom$,
-    value: state$.map(state => state.value)
-  }
-
-  return sinks
 }
