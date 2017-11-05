@@ -28,9 +28,6 @@ export function App(sources : Sources) : Sinks {
   const weightSources = { DOM: sources.DOM, props: weightProps$ }
   const heightSources = { DOM: sources.DOM, props: heightProps$ }
 
-  // const WeightLabelledSlider = isolate(LabelledSlider)
-  // const HeightLabelledSlider = isolate(LabelledSlider)
-
   const { DOM: weightVDom$, value: weightValue$ } = Slider(weightSources)
   const { DOM: heightVDom$, value: heightValue$ } = Slider(heightSources)
 

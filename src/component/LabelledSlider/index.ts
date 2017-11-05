@@ -10,6 +10,7 @@ function LabelledSlider (sources : Sources) {
   const actions = intent(sources)
   const state$ = model(props$, actions)
   const vtree$ = view(state$)
+
   return {
     DOM: vtree$,
     value: state$.map(state => state.value)
